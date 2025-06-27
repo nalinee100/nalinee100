@@ -12,12 +12,12 @@ import { XRControllerModelFactory } from './libs/three/jsm/XRControllerModelFact
 
 class App {
 	constructor() {
+		/* ── DOM / renderer setup ── */
 		const container = document.createElement('div');
 		document.body.appendChild(container);
 
 		this.assetsPath = './assets/';
 
-		/* ───────── Camera & Dolly ───────── */
 		this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 500);
 		this.camera.position.set(0, 1.6, 0);
 
@@ -27,10 +27,8 @@ class App {
 		this.dummyCam = new THREE.Object3D();
 		this.camera.add(this.dummyCam);
 
-		/* ───────── Scene & Renderer ───────── */
 		this.scene = new THREE.Scene();
 		this.scene.add(this.dolly);
-
 		this.scene.add(new THREE.HemisphereLight(0xffffff, 0xaaaaaa, 0.8));
 
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -42,7 +40,7 @@ class App {
 		this.setEnvironment();
 		window.addEventListener('resize', this.resize.bind(this));
 
-		/* ───────── Utilities ───────── */
+		/* ── helpers ── */
 		this.clock = new THREE.Clock();
 		this.up = new THREE.Vector3(0, 1, 0);
 		this.origin = new THREE.Vector3();
@@ -56,12 +54,12 @@ class App {
 		this.loadingBar = new LoadingBar();
 		this.loadCollege();
 
-		/* ───────── Audio ───────── */
+		/* ── audio ── */
 		this.listener = new THREE.AudioListener();
 		this.camera.add(this.listener);
 		this.audioLoader = new THREE.AudioLoader();
 
-		// Ambient loop
+		// ambient loop
 		this.ambientSound = new THREE.Audio(this.listener);
 		this.audioLoader.load('./assets/sound/ambient.mp3', (buf) => {
 			this.ambientSound.setBuffer(buf);
@@ -70,7 +68,7 @@ class App {
 			this.ambientSound.play();
 		});
 
-		// Footstep sound
+		// footsteps
 		this.footstepSound = new THREE.Audio(this.listener);
 		this.audioLoader.load('./assets/sound/footstep.mp3', (buf) => {
 			this.footstepSound.setBuffer(buf);
@@ -82,6 +80,7 @@ class App {
 
 		this.immersive = false;
 
+		// fetch info-board data
 		fetch('./college.json')
 			.then((res) => res.json())
 			.then((data) => {
@@ -119,7 +118,7 @@ class App {
 				const college = gltf.scene.children[0];
 				this.scene.add(college);
 
-				/* ───────── Traverse meshes & recolor ───────── */
+				/* ── recolor meshes ── */
 				college.traverse((child) => {
 					if (!child.isMesh) return;
 
@@ -142,7 +141,9 @@ class App {
 					} else if (matName.includes('Door') || child.name.includes('Door')) {
 						child.material.color.setHex(0xFF0000); // red doors
 					} else if (matName.includes('Floor') || child.name.includes('Floor')) {
-						child.material.color.setHex(0xFFD580); // light orange floor
+						child.material.color.setHex(0xFFD580); // light-orange floor
+					} else if (matName.includes('Ceiling') || child.name.includes('Ceiling')) {
+						child.material.color.setHex(0x000000); // black ceiling
 					} else if (matName.includes('SkyBox')) {
 						const oldMat = child.material;
 						child.material = new THREE.MeshBasicMaterial({ map: oldMat.map });
@@ -150,7 +151,7 @@ class App {
 					}
 				});
 
-				/* ───────── Add LobbyShop dummy ───────── */
+				/* ── dummy object for info board ── */
 				const d1 = college.getObjectByName('LobbyShop_Door__1_');
 				const d2 = college.getObjectByName('LobbyShop_Door__2_');
 				if (d1 && d2) {
@@ -245,12 +246,13 @@ class App {
 		if (!blocked) {
 			this.dolly.translateZ(-dt * speed);
 
-			// footstep trigger
+			// footstep sound
 			const now = this.clock.elapsedTime;
 			if (!this.footstepSound.isPlaying && now - this.lastStepTime > this.stepCooldown) {
 				this.footstepSound.play();
 				this.lastStepTime = now;
 			}
+
 			pos = this.dolly.getWorldPosition(this.origin);
 		}
 
@@ -331,4 +333,3 @@ class App {
 }
 
 export { App };
-
