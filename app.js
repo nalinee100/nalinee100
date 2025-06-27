@@ -135,6 +135,8 @@ class App {
 						child.material.color.setHex(0x8B4513); // brown walls
 					} else if (matName.includes('Stair')) {
 						child.material.color.setHex(0x000000); // black stairs
+					} else if (matName.includes('Sofa')) {
+						child.material.color.setStyle('#F5F5DC'); // beige sofas
 					} else if (matName.includes('SkyBox')) {
 						const oldMat = child.material;
 						child.material = new THREE.MeshBasicMaterial({ map: oldMat.map });
