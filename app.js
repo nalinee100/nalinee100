@@ -139,6 +139,8 @@ class App {
 						child.material.color.setStyle('#F5F5DC'); // beige sofas
 					} else if (matName.includes('Carpet')) {
 						child.material.color.setHex(0xB22222); // red carpet
+					} else if (matName.includes('Door') || child.name.includes('Door')) {
+						child.material.color.setHex(0xFF0000); // red doors
 					} else if (matName.includes('SkyBox')) {
 						const oldMat = child.material;
 						child.material = new THREE.MeshBasicMaterial({ map: oldMat.map });
@@ -247,7 +249,6 @@ class App {
 				this.footstepSound.play();
 				this.lastStepTime = now;
 			}
-
 			pos = this.dolly.getWorldPosition(this.origin);
 		}
 
@@ -329,3 +330,4 @@ class App {
 }
 
 export { App };
+
