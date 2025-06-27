@@ -31,10 +31,9 @@ class App {
 		this.scene.add(this.dolly);
 
 		/* ───── WARM LIGHTS ───── */
-		const hemi = new THREE.HemisphereLight(0xffeeb1, 0xffcc88, 0.9); // warm sky & ground
+		const hemi = new THREE.HemisphereLight(0xffeeb1, 0xffcc88, 0.9);
 		this.scene.add(hemi);
-
-		const sun = new THREE.DirectionalLight(0xfff0b3, 0.6);           // soft sunlight
+		const sun  = new THREE.DirectionalLight(0xfff0b3, 0.6);
 		sun.position.set(5, 10, 2);
 		this.scene.add(sun);
 
@@ -134,8 +133,11 @@ class App {
 						child.material.visible = false;
 						this.proxy = child;
 					} else if (matName.includes('Glass')) {
-						child.material.opacity = 0.1;
+						child.material.color.setStyle('#00AA88'); // green tint
 						child.material.transparent = true;
+						child.material.opacity = 0.3;
+						child.material.roughness = 0.1;
+						child.material.metalness = 0.2;
 					} else if (matName.includes('Wall')) {
 						child.material.color.setHex(0x8B4513);
 					} else if (matName.includes('Stair')) {
@@ -157,7 +159,7 @@ class App {
 					}
 				});
 
-				// dummy info-board locator
+				// dummy object for info board location
 				const d1 = college.getObjectByName('LobbyShop_Door__1_');
 				const d2 = college.getObjectByName('LobbyShop_Door__2_');
 				if (d1 && d2) {
@@ -327,3 +329,4 @@ class App {
 }
 
 export { App };
+
