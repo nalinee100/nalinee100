@@ -141,6 +141,8 @@ class App {
 						child.material.color.setHex(0xB22222); // red carpet
 					} else if (matName.includes('Door') || child.name.includes('Door')) {
 						child.material.color.setHex(0xFF0000); // red doors
+					} else if (matName.includes('Floor') || child.name.includes('Floor')) {
+						child.material.color.setHex(0xFFD580); // light orange floor
 					} else if (matName.includes('SkyBox')) {
 						const oldMat = child.material;
 						child.material = new THREE.MeshBasicMaterial({ map: oldMat.map });
@@ -252,13 +254,12 @@ class App {
 			pos = this.dolly.getWorldPosition(this.origin);
 		}
 
-		// left collision
+		// side collisions
 		dir.set(-1, 0, 0).applyMatrix4(this.dolly.matrix).normalize();
 		this.raycaster.set(pos, dir);
 		let ix = this.raycaster.intersectObject(this.proxy);
 		if (ix.length && ix[0].distance < wallLimit) this.dolly.translateX(wallLimit - ix[0].distance);
 
-		// right collision
 		dir.set(1, 0, 0).applyMatrix4(this.dolly.matrix).normalize();
 		this.raycaster.set(pos, dir);
 		ix = this.raycaster.intersectObject(this.proxy);
